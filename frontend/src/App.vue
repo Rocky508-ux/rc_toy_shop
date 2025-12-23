@@ -192,10 +192,7 @@ function logout() {
         <router-link to="/privacy">隱私權政策</router-link>
       </div>
       <div class="footer-info">
-        地址: 台北市XX區XX路XX號 | 電話: 02-1234-5678 | 營業時間: 週一至週日 10:00-22:00
-      </div>
-      <div class="footer-info">
-        © 2024 GK收藏投資平台 版權所有
+        地址: 10491臺北市中山區民生東路三段67號 | 電話: 02 2502 4654 | 營業時間: 週一至週日 10:00-22:00
       </div>
     </footer>
   </div>

@@ -96,7 +96,7 @@ const getTagClass = (tag) => {
 .product-image-container {
   position: relative;
   width: 100%;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 1 / 1;
   overflow: hidden;
   background-color: #fff; 
   display: flex;
@@ -107,7 +107,7 @@ const getTagClass = (tag) => {
 .product-image-container img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   object-position: top center;
   display: block;
   transition: transform 0.5s ease;

@@ -7,16 +7,25 @@
           <div v-else class="placeholder-image">暫無圖片</div>
         </div>
         
-        <div class="thumbnail-list" v-if="allImages.length > 1">
-          <div 
-            v-for="(img, index) in allImages" 
-            :key="img.id" 
-            class="thumbnail-item"
-            :class="{ 'active': index === currentImageIndex }"
-            @click="currentImageIndex = index"
-          >
-            <img :src="img.imagePath" :alt="product.name + ' 縮圖'" />
-          </div>
+        <!-- 縮圖區塊 (改為左右箭頭輪播) -->
+        <div class="thumbnail-wrapper" v-if="allImages.length > 1">
+            <button class="nav-btn prev-btn" @click="scrollThumbnails(-1)" :disabled="isScrollLeftEnd">‹</button>
+            
+            <div class="thumbnail-list-container" ref="thumbnailContainer" @scroll="checkScrollPosition">
+              <div class="thumbnail-list">
+                <div 
+                  v-for="(img, index) in allImages" 
+                  :key="img.id" 
+                  class="thumbnail-item"
+                  :class="{ 'active': index === currentImageIndex }"
+                  @click="currentImageIndex = index"
+                >
+                  <img :src="img.imagePath" :alt="product.name + ' 縮圖'" />
+                </div>
+              </div>
+            </div>
+
+            <button class="nav-btn next-btn" @click="scrollThumbnails(1)" :disabled="isScrollRightEnd">›</button>
         </div>
       </div>
 
@@ -100,7 +109,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue';
+import { ref, computed, watch, onMounted, nextTick } from 'vue';
 import { RouterLink } from 'vue-router';
 import api from '../services/api.js';
 
@@ -118,12 +127,22 @@ defineEmits(['add-to-cart', 'login-success', 'registration-notification', 'updat
 const product = ref(null);
 const currentImageIndex = ref(0);
 
+// Carousel refs
+const thumbnailContainer = ref(null);
+const isScrollLeftEnd = ref(true);
+const isScrollRightEnd = ref(false);
+
 // 獲取產品資料的函式
 const fetchProduct = async (productId) => {
   try {
     const response = await api.getProduct(productId);
     product.value = response.data;
     currentImageIndex.value = 0; // 重置圖片索引
+    
+    // Reset scroll state
+    nextTick(() => {
+        checkScrollPosition();
+    });
   } catch (error) {
     console.error('無法獲取產品詳細資料:', error);
     product.value = null; // 發生錯誤時清空產品資料
@@ -133,16 +152,10 @@ const fetchProduct = async (productId) => {
 // 產品的所有圖片，我們假設 API 回傳的 product 物件中包含一個名為 'images' 的陣列
 const allImages = computed(() => {
   if (!product.value || !product.value.images) return [];
-  // 如果後端回傳的圖片路徑是相對路徑，您可能需要在此處組合基礎 URL
   return product.value.images.map(img => {
     let path = img.imagePath;
     if (path && !path.startsWith('http')) {
-      // local dev or docker, usage relative path
-      // path = `http://localhost:8080${path}`;
-      // Nginx /api proxy will handle it if it starts with /api, but images start with /images...
-      // Wait, if path is /images/foo.jpg, it goes to http://localhost/images/foo.jpg -> Nginx -> http://backend:8080/images/foo.jpg.
-      // So just allow it to remain relative.
-      
+        // relative path logic
     }
     return { ...img, imagePath: path };
   });
@@ -152,6 +165,21 @@ const currentImage = computed(() => {
   if (allImages.value.length === 0) return null;
   return allImages.value[currentImageIndex.value];
 });
+
+// Scroll Logic
+const scrollThumbnails = (direction) => {
+    if (!thumbnailContainer.value) return;
+    const scrollAmount = 200; // Pixel amount to scroll
+    thumbnailContainer.value.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+};
+
+const checkScrollPosition = () => {
+    if (!thumbnailContainer.value) return;
+    const { scrollLeft, scrollWidth, clientWidth } = thumbnailContainer.value;
+    isScrollLeftEnd.value = scrollLeft <= 0;
+    // adding a small tolerance (1px) for calculation errors
+    isScrollRightEnd.value = scrollLeft + clientWidth >= scrollWidth - 1;
+};
 
 // 監聽 props.id 的變化，當它改變時重新獲取產品資料
 watch(() => props.id, (newId) => {
@@ -173,28 +201,121 @@ onMounted(() => {
 
 .detail-layout {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  /* ★關鍵修正：使用 minmax(0, 1fr) 強制網格不得被內容撐開，這是解決爆版的終極解法 */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 50px;
   align-items: start;
-  margin-bottom: 60px; /* 增加底部間距，區隔下方的通用說明 */
+  margin-bottom: 60px;
 }
 
 /* 圖片區 */
-.image-section { display: flex; flex-direction: column; gap: 15px; }
+.image-section { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 15px; 
+  width: 100%;
+  /* ★核彈級修正：直接鎖死最大寬度，保證只佔一半版面，絕對不可能撐爆 */
+  max-width: 550px; 
+  min-width: 0; /* ★關鍵修正：Flex 子元素必須設 min-width: 0 確保能正確收縮 */
+}
+
 .main-image-container {
-  width: 100%; aspect-ratio: 3 / 4; background-color: #fff; border: 1px solid #eee;
-  border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center;
+  width: 100%;
+  aspect-ratio: 1 / 1; /* ★回歸最原始穩定的正方形設定 */
+  max-height: 500px;
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  background-color: #fff; 
+  border: 1px solid #eee;
   box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  padding: 10px;
+  border-radius: 12px;
+  overflow: hidden;
 }
-.main-image { width: 100%; height: 100%; object-fit: contain; }
-.thumbnail-list { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px; }
+.main-image { 
+  max-width: 100%; 
+  max-height: 100%; 
+  width: auto; 
+  height: auto; 
+  object-fit: contain; 
+}
+
+/* 縮圖輪播容器 */
+.thumbnail-wrapper {
+    /* ★終極方案：改用 Grid 排版 (固定-伸縮-固定) */
+    display: grid;
+    grid-template-columns: 30px minmax(0, 1fr) 30px; /* 左按鈕 - 縮圖區 - 右按鈕 */
+    gap: 10px;
+    margin-top: 10px;
+    height: 80px;
+    width: 100%; 
+    align-items: center;
+}
+
+.thumbnail-list-container {
+    /* Grid 子元素設定 */
+    width: 100%;
+    height: 100%;
+    overflow-x: auto;
+    scrollbar-width: none; 
+    -ms-overflow-style: none;
+    scroll-behavior: smooth;
+    border-radius: 8px;
+    /* 移除 display: flex，讓它回歸單純的捲動視窗，內部 .thumbnail-list 會負責排版 */
+}
+
+/* ★關鍵修正：內部列表必須是 Flex 才能橫向排列，且寬度要設為 max-content 避免換行 */
+.thumbnail-list {
+  display: flex;
+  height: 100%;
+  gap: 10px;
+  width: max-content;
+  align-items: center;
+}
+
 .thumbnail-item {
-  width: 80px; height: 80px; border-radius: 8px; overflow: hidden; border: 2px solid transparent;
-  cursor: pointer; transition: all 0.2s; flex-shrink: 0; background-color: #f0f0f0;
+  width: 70px; /* 固定寬度 */
+  height: 70px; /* 固定高度，略小於容器 80px 以留邊距 */
+  flex-shrink: 0; /* 防止被壓縮 */
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s;
 }
-.thumbnail-item img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
-.thumbnail-item:hover { border-color: #ccc; }
-.thumbnail-item.active { border-color: #4285F4; box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2); }
+
+.thumbnail-item.active {
+  border-color: #4285F4;
+}
+
+.thumbnail-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 確保填滿方框 */
+  display: block;
+}
+/* 導航按鈕 */
+.nav-btn {
+    width: 30px;
+    height: 70px;
+    flex-shrink: 0; /* ★關鍵修正：防止按鈕被擠壓消失 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.6); /* ★加深顏色確保可見 */
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5rem;
+    border-radius: 4px;
+    transition: all 0.2s;
+    user-select: none;
+    z-index: 2;
+}
+.nav-btn:hover:not(:disabled) {
+    background: rgba(0,0,0,0.8);
+}
 
 /* 資訊區 */
 .info-section { display: flex; flex-direction: column; }

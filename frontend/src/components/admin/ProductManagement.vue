@@ -108,18 +108,30 @@
                 </select>
               </div>
             </div>
-            <!-- 新增：圖片上傳區塊 -->
+            <!-- 新增：多圖管理區塊 -->
             <div class="form-row">
               <div class="form-group full-width">
-                <label>商品圖片</label>
-                <div style="display: flex; gap: 10px; align-items: flex-start;">
-                    <div v-if="editedProduct.images && editedProduct.images.length > 0" style="margin-right: 10px;">
-                        <img :src="editedProduct.images[0].imagePath || editedProduct.images[0].image_path" 
-                             style="width: 100px; height: 100px; object-fit: cover; border: 1px solid #ddd; border-radius: 4px;">
+                <label>商品圖片集 (第一張設為主圖)</label>
+                
+                <!-- 圖片列表 -->
+                <div class="image-gallery" v-if="editedProduct.images && editedProduct.images.length > 0">
+                    <div v-for="(img, index) in editedProduct.images" :key="index" class="gallery-item" :class="{ 'is-main': img.isMain }">
+                        <img :src="img.imagePath || img.image_path" class="gallery-img">
+                        <div class="gallery-actions">
+                            <button type="button" class="btn-sm btn-main" @click="setMainImage(index)" v-if="!img.isMain">設為主圖</button>
+                            <span class="main-label" v-else>主圖</span>
+                            <button type="button" class="btn-sm btn-del" @click="removeImage(index)">刪除</button>
+                        </div>
                     </div>
-                    <input type="file" @change="handleFileUpload" accept="image/*" class="admin-input" />
                 </div>
-                <small style="color: #666;">支援 jpg, png 格式。上傳後將自動設為主圖。</small>
+
+                <!-- 上傳按鈕 -->
+                <div class="upload-area">
+                    <input type="file" id="file-upload" @change="handleFileUpload" accept="image/*" class="admin-input" />
+                    <small style="color: #666; display: block; margin-top: 5px;">
+                        支援 jpg, png 格式。上傳後自動加入列表。
+                    </small>
+                </div>
               </div>
             </div>
           </div>
@@ -210,10 +222,12 @@ const getProductMainImage = (product) => {
 };
 
 const getTagClass = (tag) => {
-  if (tag === 'new') return 'new-tag';
-  if (tag === 'HOT' || tag === 'hot') return 'hot-tag';
-  if (tag === '預購') return 'preorder-tag';
-  if (tag === '現貨') return 'instock-tag';
+  if (!tag) return '';
+  const lowerTag = tag.toLowerCase().trim();
+  if (lowerTag === 'new' || lowerTag === '新品') return 'new-tag';
+  if (lowerTag === 'hot' || lowerTag === '熱銷') return 'hot-tag';
+  if (lowerTag === '預購') return 'preorder-tag';
+  if (lowerTag === '現貨') return 'instock-tag';
   return '';
 };
 
@@ -275,6 +289,7 @@ const deleteProduct = async (productId) => {
 const closeModal = () => {
   showModal.value = false;
 };
+
 const handleFileUpload = async (event) => {
   const file = event.target.files[0];
   if (!file) return;
@@ -287,17 +302,45 @@ const handleFileUpload = async (event) => {
     const response = await api.uploadProductImage(formData);
     const imageUrl = response.data.url;
     
-    // 更新編輯中的商品資料 (設定為主圖)
-    // 這裡直接覆蓋 images 陣列，若要支援多圖可改成 push
-    editedProduct.images = [
-      { imagePath: imageUrl, isMain: true }
-    ];
+    // 初始化陣列
+    if (!editedProduct.images) {
+        editedProduct.images = [];
+    }
+
+    // 邏輯：如果是第一張圖片，預設為主圖；否則為附圖
+    const isFirst = editedProduct.images.length === 0;
     
-    emit('show-notification', '圖片上傳成功！');
+    // 加入新圖片
+    editedProduct.images.push({ 
+        imagePath: imageUrl, 
+        isMain: isFirst 
+    });
+    
+    // 清空 input 讓使用者可以重複上傳同一張(雖然通常不需要)
+    event.target.value = '';
+
+    emit('show-notification', '圖片已加入列表！記得按儲存喔。');
   } catch (error) {
     console.error('上傳失敗:', error);
     emit('show-notification', '圖片上傳失敗，請稍後再試。');
   }
+};
+
+const removeImage = (index) => {
+    // 如果刪除的是主圖，且還有其他圖片，將第一張設為主圖
+    const wasMain = editedProduct.images[index].isMain;
+    editedProduct.images.splice(index, 1);
+    
+    if (wasMain && editedProduct.images.length > 0) {
+        editedProduct.images[0].isMain = true;
+    }
+};
+
+const setMainImage = (index) => {
+    // 將所有圖片設為 false
+    editedProduct.images.forEach(img => img.isMain = false);
+    // 將選中的設為 true
+    editedProduct.images[index].isMain = true;
 };
 </script>
 
@@ -317,4 +360,16 @@ const handleFileUpload = async (event) => {
 .hot-tag { background-color: #FF0000; box-shadow: 0 0 5px rgba(255, 0, 0, 0.4); }
 .preorder-tag { background-color: #fbbc05; color: #333; }
 .instock-tag { background-color: #34A853; }
+
+/* 圖片畫廊樣式 */
+.image-gallery { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
+.gallery-item { position: relative; width: 100px; height: 120px; border: 1px solid #ddd; border-radius: 6px; overflow: hidden; background: #fff; display: flex; flex-direction: column; }
+.gallery-item.is-main { border: 2px solid #4285F4; box-shadow: 0 0 5px rgba(66, 133, 244, 0.3); }
+.gallery-img { width: 100%; height: 80px; object-fit: cover; }
+.gallery-actions { display: flex; justify-content: space-between; padding: 5px; background: #f9f9f9; flex-grow: 1; align-items: center; }
+.btn-sm { font-size: 0.7rem; padding: 2px 5px; cursor: pointer; border: none; border-radius: 3px; }
+.btn-main { background: #4CAF50; color: white; }
+.btn-del { background: #F44336; color: white; margin-left: auto; }
+.main-label { font-size: 0.75rem; color: #4285F4; font-weight: bold; margin-left: 5px; }
+.upload-area { background: #f8f9fa; padding: 10px; border-radius: 6px; border: 1px dashed #ccc; }
 </style>

@@ -12,7 +12,7 @@
             <span class="icon">📍</span>
             <div class="text">
               <strong>地址</strong>
-              <p>台北市XX區XX路XX號</p>
+              <p>10491臺北市中山區民生東路三段67號</p>
             </div>
           </div>
           
@@ -20,7 +20,7 @@
             <span class="icon">📞</span>
             <div class="text">
               <strong>電話</strong>
-              <p>02-1234-5678</p>
+              <p>02 2502 4654</p>
             </div>
           </div>
           
@@ -28,7 +28,7 @@
             <span class="icon">📧</span>
             <div class="text">
               <strong>Email</strong>
-              <p>support@rctoyshop.com</p>
+              <p>service@rctoyshop.com</p>
             </div>
           </div>
 

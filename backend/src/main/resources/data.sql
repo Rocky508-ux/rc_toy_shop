@@ -1,8 +1,34 @@
 -- (1) 使用者
 INSERT IGNORE INTO users (email, password, name, role, status, phone, birthday) VALUES 
-('admin@rc.com', 'admin123', 'Admin User', 'ADMIN', 'ACTIVE', '0912345678', '1990-01-01'),
-('user@example.com', 'password', 'Normal User', 'USER', 'ACTIVE', '0923456789', '1995-05-20'),
-('user2@example.com', '123456', 'User2', 'USER', 'ACTIVE', '0934567890', '2000-10-10');
+-- Admin & Staff
+('admin@rctoyshop.com', 'admin123', '陳建國', 'ADMIN', 'ACTIVE', '0987654321', '1985-06-15'),
+('service@rctoyshop.com', 'admin123', '林美秀', 'ADMIN', 'ACTIVE', '0911222333', '1990-11-20'),
+
+-- Regular Users (VIP)
+('yating.lin92@gmail.com', '123456', '林雅婷', 'USER', 'ACTIVE', '0912345678', '1992-09-20'),
+('cm.chang88@yahoo.com.tw', '123456', '張志明', 'USER', 'ACTIVE', '0922333444', '1998-03-05'),
+('david.wang77@hotmail.com', '123456', '王大偉', 'USER', 'ACTIVE', '0933444555', '1988-07-12'),
+('sara.lee01@gmail.com', '123456', '李淑芬', 'USER', 'ACTIVE', '0955666777', '1975-04-30'),
+('kevin.chen99@gmail.com', '123456', '陳冠宇', 'USER', 'ACTIVE', '0966777888', '1999-12-01'),
+
+-- Regular Users (General)
+('jason.wu85@yahoo.com', '123456', '吳家豪', 'USER', 'ACTIVE', '0977888999', '1985-02-28'),
+('emily.hsu95@gmail.com', '123456', '許婉婷', 'USER', 'ACTIVE', '0988999000', '1995-10-10'),
+('michael.huang@outlook.com', '123456', '黃柏翰', 'USER', 'ACTIVE', '0910111222', '1993-08-15'),
+('jessica.tsai@gmail.com', '123456', '蔡欣依', 'USER', 'ACTIVE', '0920222333', '1996-05-25'),
+('alex.yang00@gmail.com', '123456', '楊宗緯', 'USER', 'ACTIVE', '0930333444', '2000-01-20'),
+('amber.liu89@yahoo.com.tw', '123456', '劉心怡', 'USER', 'ACTIVE', '0940444555', '1989-11-03'),
+('eric.chou82@gmail.com', '123456', '周杰倫', 'USER', 'ACTIVE', '0950555666', '1982-01-18'),
+('grace.cheng@hotmail.com', '123456', '鄭宜農', 'USER', 'ACTIVE', '0960666777', '1991-03-30'),
+
+-- New Users (Recent Signups)
+('ryan.hsu@gmail.com', '123456', '徐志宏', 'USER', 'ACTIVE', '0970777888', '1997-07-07'),
+('vivian.lai@yahoo.com', '123456', '賴薇如', 'USER', 'ACTIVE', '0980888999', '1994-09-09'),
+('daniel.pan@gmail.com', '123456', '潘瑋柏', 'USER', 'ACTIVE', '0911000111', '1980-08-06'),
+('nana.lin@outlook.com', '123456', '林奈奈', 'USER', 'ACTIVE', '0922111222', '2001-12-25'),
+('steven.kuo@gmail.com', '123456', '郭富城', 'USER', 'ACTIVE', '0933222333', '1965-10-26'),
+('candy.chang@yahoo.com.tw', '123456', '張惠妹', 'USER', 'ACTIVE', '0944333444', '1972-08-09'),
+('jacky.wu@gmail.com', '123456', '吳宗憲', 'USER', 'ACTIVE', '0955444555', '1962-09-26');
 
 -- (2) 商品
 INSERT INTO products (id, name, description, price, stock, category_id, tag, type, studio, scale, dimensions, material, estimated_arrival) VALUES

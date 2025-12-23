@@ -1,0 +1,71 @@
+plugins {
+    id 'java'
+    // 📢 修正點 1：使用穩定的 Spring Boot 3.3.0
+    id 'org.springframework.boot' version '3.3.0' 
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.rctoyshop'
+version = '0.0.1-SNAPSHOT'
+description = 'Demo project for Spring Boot'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+// 📢 修正點 2：移除重複的 dependencies {} 區塊，將所有依賴統一在此處
+dependencies {
+    // 核心 Spring Boot 與 Web 模組
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // Security & JWT
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+    // Swagger/OpenAPI UI 依賴
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
+    
+    // Actuator
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    
+    // 資料庫驅動
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    
+    // Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok' 
+    
+    // 開發工具
+    // devtools removed to prevent restart loop
+
+    
+    // 測試依賴
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+// 📢 修正點 3：禁用普通的 jar 任務，只保留 bootJar
+// 這樣 build/libs 下就只會有一顆可執行的 Jar 檔，避免 Docker Copy 錯
+tasks.named('jar') {
+    enabled = false
+}

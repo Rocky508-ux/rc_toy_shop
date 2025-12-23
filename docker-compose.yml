@@ -1,0 +1,56 @@
+version: '3.8' # Docker Compose 的版本號
+
+services: # 定義這個專案會用到的所有「服務」 (Containers)
+
+  # --- 1. 前端服務 (Frontend) ---
+  frontend:
+    build: ./frontend # 告訴 Docker 去 ./frontend 資料夾找 Dockerfile 來構建 Image
+    ports:
+      - "80:80"       # 埠口映射：把您電腦的 Port 80 (左邊) 對應到 Container 裡的 Port 80 (右邊)
+                      # 這樣您在瀏覽器打 http://localhost 就會進到這個 Container
+    depends_on:
+      - backend       # 依賴設定：告訴 Docker 先啟動 backend，再啟動 frontend
+    networks:
+      - rc-network    # 指定這個服務要加入的網路群組
+
+  # --- 2. 後端服務 (Backend) ---
+  backend:
+    build: ./backend  # 去 ./backend 資料夾找 Dockerfile (裡面有 Gradle build 的步驟)
+    ports:
+      - "8080:8080"   # 開發用：把 Port 8080 開放出來，方便您本機 npm run dev 連線用
+                      # 如果是純上線環境，這行其實可以註解掉，讓它只對內網開放
+    environment:      # 設定環境變數 (會覆蓋 application.properties 的設定)
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/rc_toy_shop?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Taipei
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: abc123
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update # 自動更新資料庫結構 (Table)
+    volumes:
+      - uploads_data:/app/uploads # ★新增：把 uploads_data 掛載到容器內的 /app/uploads
+    depends_on:
+      - db            # 告訴 Docker 先把資料庫 (db) 開好，再開後端
+    networks:
+      - rc-network
+
+  # --- 3. 資料庫服務 (Database) ---
+  db:
+    image: mysql:8.0  # 直接使用官方做好的 MySQL 8.0 Image (不用自己 build)
+    container_name: rc-mysql # 幫 Container 取個固定名字，方便用指令找它
+    ports:
+      - "3306:3306"   # 開放 Port 3306，讓您可以用 Workbench 之類的工具連進去看資料
+    environment:
+      MYSQL_ROOT_PASSWORD: abc123 # 設定 MySQL 的 root 密碼
+      MYSQL_DATABASE: rc_toy_shop # 啟動時自動建立一個叫 rc_toy_shop 的資料庫
+    volumes:
+      - db_data:/var/lib/mysql # 資料掛載：把資料庫的檔案存在外面 (db_data)，這樣刪除 Container 資料才不會不見
+    networks:
+      - rc-network
+
+# --- 網路設定 ---
+networks:
+  rc-network:
+    driver: bridge # 建立一個虛擬的橋接網路，讓這三個 Container 可以互通
+
+# --- 儲存卷設定 ---
+volumes:
+  db_data: # 宣告一個叫 db_data 的儲存空間 (給 MySQL 用)
+  uploads_data: # ★新増：宣告一個叫 uploads_data 的空間 (給後端存圖片用)

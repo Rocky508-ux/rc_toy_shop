@@ -1,0 +1,197 @@
+:root {
+  --admin-primary-color: #3498db;
+  --admin-success-color: #2ecc71;
+  --admin-danger-color: #e74c3c;
+  --admin-warning-color: #f39c12;
+  --admin-info-color: #1abc9c;
+  --admin-dark-color: #2c3e50;
+  --admin-light-gray-color: #f2f2f2;
+  --admin-medium-gray-color: #ddd;
+  --admin-dark-gray-color: #95a5a6;
+  --admin-text-color: #333;
+  --admin-bg-color: #fff;
+  --admin-card-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  --admin-border-radius: 8px;
+}
+
+.admin-card {
+  background-color: var(--admin-bg-color);
+  padding: 25px;
+  border-radius: var(--admin-border-radius);
+  box-shadow: var(--admin-card-shadow);
+  overflow: hidden; /* 防止卡片本身被撐開，讓內部 wrapper 處理滾動 */
+  margin-bottom: 20px;
+}
+
+.admin-card .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap; /* 讓標題和新增按鈕在小螢幕時自動換行 */
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.admin-card .header h1 {
+  margin: 0;
+  font-size: 1.6em;
+  color: var(--admin-dark-color);
+}
+
+/* ★★★ 關鍵修正：表格容器設定 ★★★ */
+.admin-table-wrapper {
+  overflow-x: auto; /* 內容過寬時顯示橫向捲軸 */
+  width: 100%;
+  -webkit-overflow-scrolling: touch; /* 優化 iOS 滑動體驗 */
+  padding-bottom: 5px; /* 預留空間給捲軸 */
+}
+
+/* ★★★ 關鍵修正：表格本體設定 ★★★ */
+.admin-table {
+  width: 100%;
+  min-width: 1000px; /* 強制表格最小寬度，防止內容擠壓 */
+  border-collapse: collapse;
+  /* 移除 table-layout: fixed，讓內容決定寬度 */
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 12px 15px;
+  text-align: left;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--admin-medium-gray-color);
+  white-space: nowrap; /* 讓文字不換行，保持整齊 */
+}
+
+/* 如果有需要換行的描述欄位，可以另外指定 class 放寬限制 */
+.admin-table td.wrap-text {
+  white-space: normal;
+  min-width: 200px;
+}
+
+.admin-table thead th {
+  background-color: var(--admin-light-gray-color);
+  font-weight: 600;
+  color: var(--admin-text-color);
+}
+
+.admin-table tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+/* ★★★ 關鍵修正：操作按鈕區塊 ★★★ */
+.admin-table .actions {
+  display: flex;
+  flex-wrap: nowrap; /* 強制按鈕不換行 */
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* --- BUTTONS --- */
+.admin-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap; /* 按鈕文字不換行 */
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+  color: white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+  filter: brightness(95%);
+}
+
+.add-btn { background-color: var(--admin-success-color); }
+.edit-btn { background-color: var(--admin-primary-color); }
+.delete-btn { background-color: var(--admin-danger-color); }
+.view-btn { background-color: #9b59b6; }
+.history-btn { background-color: var(--admin-info-color); }
+.disable-btn { background-color: var(--admin-warning-color); }
+.enable-btn { background-color: #27ae60; }
+.save-btn { background-color: var(--admin-primary-color); }
+.cancel-btn { background-color: var(--admin-dark-gray-color); }
+
+/* --- STATUS & SELECT --- */
+.status-badge {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.85em;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  font-weight: 500;
+  display: inline-block;
+}
+.status-badge.active { background-color: var(--admin-success-color); }
+.status-badge.disabled { background-color: var(--admin-dark-gray-color); }
+
+.status-badge.處理中 { background-color: var(--admin-warning-color); }
+.status-badge.已出貨 { background-color: var(--admin-primary-color); }
+.status-badge.已送達 { background-color: var(--admin-success-color); }
+.status-badge.已取消 { background-color: var(--admin-danger-color); }
+
+.styled-select {
+  appearance: none;
+  background-color: var(--admin-light-gray-color);
+  border: 1px solid var(--admin-medium-gray-color);
+  border-radius: 4px;
+  padding: 6px 30px 6px 10px;
+  cursor: pointer;
+  min-width: 100px;
+  font-size: 14px;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%232c3e50%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22/%3E%3C/svg%3E');
+  background-repeat: no-repeat;
+  background-position: right 10px top 50%;
+  background-size: 0.65em auto;
+}
+
+/* --- MODAL --- */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex; justify-content: center; align-items: center;
+  z-index: 1001;
+}
+.modal-content {
+  background-color: #fff; padding: 30px; border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  width: 90%; max-width: 600px;
+  max-height: 90vh; overflow-y: auto;
+}
+.modal-content h2 {
+  margin-top: 0; margin-bottom: 25px; color: #333;
+}
+.form-group { margin-bottom: 20px; }
+.form-group label {
+  display: block; margin-bottom: 8px; font-weight: 600; color: #555;
+}
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1em;
+  box-sizing: border-box;
+}
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 30px;
+}

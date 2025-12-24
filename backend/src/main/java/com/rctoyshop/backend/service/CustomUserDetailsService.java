@@ -33,20 +33,20 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("找無此人: " + email);
         }
 
-        // 2. (額外邏輯) 檢查帳號狀態。如果是 "disabled" (停用)，就不准登入
+        // 2. 檢查帳號狀態 (停用/ACTIVE)
         String status = user.getStatus() != null ? user.getStatus().toLowerCase() : "active";
-        // 比對字串，確保不是 'active' 就拋出例外
-        if (!"active".equals(status)) {
-            // 這個 Exception 會被 Spring Security 捕捉，視為登入失敗
-            throw new UsernameNotFoundException("帳號已被停用: " + email);
-        }
+        boolean enabled = "active".equals(status);
 
         // 3. (翻譯) 把我們的 User 轉換成 Spring Security 看得懂的 UserDetails
-        // 這裡回傳的是 org.springframework.security.core.userdetails.User
+        // 使用完整建構子: User(username, password, enabled, accountNonExpired,
+        // credentialsNonExpired, accountNonLocked, authorities)
         return new org.springframework.security.core.userdetails.User(
-                user.getEmail(), // 帳號
-                user.getPassword(), // 密碼 (我們會比對這個)
-                // 權限：Spring Security 喜歡 "ROLE_" 開頭，所以我們把 ADMIN 變成 ROLE_ADMIN
+                user.getEmail(),
+                user.getPassword(),
+                enabled, // ★★★ 這裡傳入 true/false，Spring Security 會自動檢查並拋出 DisabledException
+                true, // accountNonExpired
+                true, // credentialsNonExpired
+                true, // accountNonLocked
                 Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole())));
     }
 }

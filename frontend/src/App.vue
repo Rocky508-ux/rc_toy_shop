@@ -47,7 +47,16 @@ onMounted(() => {
 // 這樣可以確保即使 emit 丟失，換頁時也會自動更新 UI
 watch(() => route.path, () => {
   checkAuth();
-});
+}, { immediate: true });
+
+// ★★★ 監聽路由查詢參數 msg，若有則顯示 Alert 並清除 ★★★
+watch(() => route.query.msg, (newMsg) => {
+  if (newMsg) {
+    alert(newMsg);
+    // 清除 URL 上的參數，避免重新整理又跳出來
+    router.replace({ query: { ...route.query, msg: undefined } });
+  }
+}, { immediate: true });
 
 function handleLoginSuccess() {
   checkAuth();

@@ -59,7 +59,22 @@ INSERT INTO products (id, name, description, price, stock, category_id, tag, typ
 -- 4. ★ NEW ★ 鬼滅之刃 (Demon Slayer)
 ('demon-slayer-rengoku', '鬼滅之刃 炎柱 煉獄杏壽郎 - 炎之呼吸', '「我會履行我的職責！在這裡的人，一個都不會死！」炎柱燃燒生命釋放奧義的瞬間。特效件採用高品質透明樹脂，展現出烈火燎原的氣勢，披風的破損與神情的堅毅都刻畫得入木三分。', 18800, 3, 'other', 'HOT', 'hot', 'Cheng Studio', '1/6', 'H:40cm x W:35cm x D:30cm', '樹脂 + PU', '現貨'),
 
-('demon-slayer-giyu', '鬼滅之刃 水柱 富岡義勇 - 凪', '「水之呼吸 十一之型 凪。」在暴風雨中平靜如水的劍士。地台的水浪特效動感十足，與在此之中靜止的義勇形成強烈對比，展現出高超的劍術境界。', 17500, 4, 'other', '預購', 'figure', 'G5 Studio', '1/6', 'H:38cm x W:32cm x D:30cm', '樹脂 + 透明件', '2025年 第2季')
+('demon-slayer-giyu', '鬼滅之刃 水柱 富岡義勇 - 凪', '「水之呼吸 十一之型 凪。」在暴風雨中平靜如水的劍士。地台的水浪特效動感十足，與在此之中靜止的義勇形成強烈對比，展現出高超的劍術境界。', 17500, 4, 'other', '預購', 'figure', 'G5 Studio', '1/6', 'H:38cm x W:32cm x D:30cm', '樹脂 + 透明件', '2025年 第2季'),
+
+-- 5. User Requested Additions (Round 1 & 2 Refined)
+('draHa', '七龍珠Z 孫悟空 (超級賽亞人2)', '「這一擊是為了特南克斯！」與魔人達爾激戰時的巔峰姿態，周身環繞著狂暴的藍色閃電。Unknown Studio 精細刻畫了戰損的道服與堅毅的眼神。', 15800, 5, 'dbz', '現貨', 'figure', 'Unknown Studio', '1/6', 'H:40cm', '樹脂', '現貨'),
+('samee', '鬼滅之刃 我妻善逸 (雷之呼吸 柒之型) - 火雷神', '「因為這是我為了和你並肩作戰...所自創的招式。」金色的雷龍在戰場上奔騰，善逸覺醒後的極速一斬。Design Studio 採用透明件呈現雷電特效。', 8800, 10, 'other', '現貨', 'figure', 'Design Studio', '1/8', 'H:25cm', 'PVC', '現貨'),
+('tan', '鬼滅之刃 灶門炭治郎 - 火之神神樂', '揮舞著日輪刀，斬斷眼前一切的惡鬼。Tan Studio 完美還原了「碧羅之天」的火焰動態，底座的火龍特效氣勢磅礡。', 16800, 8, 'other', 'HOT', 'figure', 'Tan Studio', '1/6', 'H:35cm', '樹脂', '現貨'),
+('winter', '死神 日番谷冬獅郎 - 大紅蓮冰輪丸', '「端坐於霜天吧，冰輪丸！」護廷十三隊十番隊隊長，天才少年展現出的完全解放姿態。背後的冰龍雙翼與手中的冰刀晶瑩剔透。', 12800, 6, 'other', '預購', 'figure', 'Ice Studio', '1/6', 'H:38cm', '樹脂', '2025年 第1季'),
+('three', '鬼滅之刃 上弦之三 猗窩座 - 破壞殺·羅針', '「變得更強吧，杏壽郎！」崇尚強者的武鬥家鬼，展現出強大的鬥氣與破壞力。腳下的雪花羅針圖案發出幽幽藍光。', 22000, 3, 'other', '預購', 'hot', 'History Studio', '1/4', 'H:50cm', '高級樹脂', '2025年 第1季'),
+('jay', 'Hunter x Hunter 大傑 (黑化) - 誓約與制約', '「我已經...無所謂了(ボさん)。」為了獲得能夠打倒尼飛彼多的力量，強行成長後的極限姿態。這驚人的髮量突破天際！', 5800, 20, 'other', '現貨', 'blindbox', 'Street Art', '1/10', 'H:45cm', 'Vinyl', '現貨'),
+('coololo', 'Hunter x Hunter 庫洛洛·魯西魯 - 盜賊的極意', '「我們是強盜，想要什麼就去搶。」幻影旅團團長，手持具現化的書本，展現出絕對的冷靜與優雅。背景的念獸特效充滿壓迫感。', 19800, 4, 'other', 'HOT', 'hot', 'Spider Studio', '1/6', 'H:36cm', '樹脂', '現貨'),
+('lufi', '海賊王 魯夫 (五檔) - 太陽神尼卡', '「這就是我最高的頂點！」覺醒橡膠果實真實力量的姿態，展現出極致的自由(與胡鬧)。白色的頭髮與飄帶象徵著解放心靈的戰士。', 18800, 5, 'other', 'HOT', 'hot', 'One Piece Studio', '1/6', 'H:40cm', '樹脂', '現貨'),
+
+('artimu', '遊戲王 雅圖姆 (無名的法老王) - 王之記憶', '「我的回合！抽牌！」古埃及的法老王靈魂，展現出王者的霸氣與自信。背後的千年積木與三幻神石板背景充滿史詩感。', 14500, 3, 'other', 'HOT', 'hot', 'Art Studio', '1/6', 'H:35cm', '樹脂', '現貨'),
+('blue', '遊戲王 青眼白龍 - 毀滅之爆裂疾風彈', '「強韌！無敵！最強！」海馬瀨人的驕傲，攻擊力3000的傳說之龍。珍珠色的塗裝展現出白龍的高貴，嘴部凝聚的光球蓄勢待發。', 13200, 5, 'other', '預購', 'figure', 'Blue Studio', '1/7', 'H:30cm', 'PVC', '2025年 第1季'),
+('love', '鬼滅之刃 狛治與戀雪 - 初戀的約定', '「我們會永遠在一起。」上弦之三猗窩座身為人類時的悲傷回憶。櫻花樹下的兩人許下守護彼此的諾言，唯美而催淚的場景。', 9900, 10, 'other', '現貨', 'figure', 'Heart Studio', '1/8', 'H:20cm', 'PVC', '現貨'),
+('gu', '進擊的巨人 艾連·葉卡 (嚮往自由) - 發動地鳴', '「海的那邊...是敵人嗎？」為了帕拉迪島的同伴，決意背負一切罪惡的艾連。眼神中透露出堅定與哀傷，身後是巨大的巨人骨架。', 17800, 4, 'other', '預購', 'figure', 'Future Studio', '1/6', 'H:38cm', '樹脂', '2025年 第1季')
 
 ON DUPLICATE KEY UPDATE 
 name=VALUES(name), description=VALUES(description), price=VALUES(price), stock=VALUES(stock), category_id=VALUES(category_id), tag=VALUES(tag), type=VALUES(type), studio=VALUES(studio), scale=VALUES(scale), dimensions=VALUES(dimensions), material=VALUES(material), estimated_arrival=VALUES(estimated_arrival);
@@ -107,7 +122,27 @@ INSERT INTO product_images (product_id, image_path, is_main) VALUES
 ('demon-slayer-rengoku', '/image/fire01.jpg', FALSE),
 
 -- Giyu
-('demon-slayer-giyu', '/image/water.jpg', TRUE);
+('demon-slayer-giyu', '/image/water.jpg', TRUE),
+
+-- New Images (User Requested)
+-- draHa (2 images now)
+('draHa', '/image/draHa.jpg', TRUE),
+('draHa', '/image/draHa02.jpg', FALSE),
+
+-- Single Images
+('samee', '/image/samee.jpg', TRUE),
+('tan', '/image/tan.jpg', TRUE),
+('winter', '/image/winter.jpg', TRUE),
+('three', '/image/three.jpg', TRUE),
+('jay', '/image/jay.jpg', TRUE),
+('coololo', '/image/coololo.jpg', TRUE),
+('lufi', '/image/lufi.jpg', TRUE),
+
+-- More New Images (Round 2)
+('artimu', '/image/artimu.jpg', TRUE),
+('blue', '/image/blue.jpg', TRUE),
+('love', '/image/love.jpg', TRUE),
+('gu', '/image/gu.jpg', TRUE);
 
 
 -- (4) 訂單 (Orders)
@@ -165,15 +200,23 @@ UPDATE products SET tag='HOT', type='hot' WHERE id IN (
     'dbz-gohan-beast',     -- 野獸悟飯
     'dbz-ssj4-gogeta',     -- 超四悟吉塔
     'aot-levi',            -- 兵長里維
-    'demon-slayer-rengoku' -- 炎柱煉獄 (New)
+    'demon-slayer-rengoku',-- 炎柱煉獄
+    'tan',                 -- 炭治郎
+    'coololo',             -- 庫洛洛
+    'lufi',                -- 魯夫
+    'artimu'               -- 雅圖姆 (HOT)
 );
 
 -- 2. PRE-ORDER (預購) - 4 Items
 UPDATE products SET tag='預購' WHERE id IN (
     'dbz-black',           -- 黑悟空
-    'bleach-white-ichigo', -- 白一護 (Moved from Hot to Preorder to balance)
+    'bleach-white-ichigo', -- 白一護
     'aot-eren',            -- 艾連
-    'demon-slayer-giyu'    -- 水柱義勇 (New)
+    'demon-slayer-giyu',   -- 水柱義勇
+    'winter',              -- 冬獅郎
+    'blue',                -- 青眼白龍
+    'gu',                  -- 艾連 (Moved to Pre)
+    'three'                -- 猗窩座 (Moved to Pre)
 );
 
 -- 3. IN-STOCK (現貨) - 4 Items
@@ -181,5 +224,9 @@ UPDATE products SET tag='現貨' WHERE id IN (
     'dbz-ui-goku',         -- 自在極意
     'dbz-ssj-gogeta',      -- 超賽悟吉塔
     'dbz-vegito',          -- 貝吉特
-    'dbz-ssj4-goku'        -- 超四悟空
+    'dbz-ssj4-goku',       -- 超四悟空
+    'draHa',               -- 超二悟空
+    'samee',               -- 善逸
+    'jay',                 -- 大傑
+    'love'                 -- 戀雪
 );

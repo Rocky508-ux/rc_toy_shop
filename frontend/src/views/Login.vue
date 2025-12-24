@@ -48,16 +48,18 @@ const handleLogin = async () => {
     }
   } catch (error) {
     console.error('登入失敗:', error);
-    if (error.response && error.response.status === 401) {
-      errorMessage.value = '帳號或密碼錯誤';
-    } else if (error.response) {
-      // 伺服器有回傳錯誤 (4xx, 5xx)
-      errorMessage.value = `登入失敗 (${error.response.status}): ${error.response.data || error.message}`;
+    if (error.response) {
+      if (error.response.status === 401) {
+        errorMessage.value = '帳號或密碼錯誤';
+      } else if (error.response.status === 403) {
+        // ★★★ 處理帳號停用 (Backend 回傳 403) ★★★
+        errorMessage.value = error.response.data; // 直接顯示後端傳來的 "帳戶已被停用,請聯繫管理員"
+      } else {
+        errorMessage.value = `登入失敗 (${error.response.status}): ${error.response.data || error.message}`;
+      }
     } else if (error.request) {
-      // 請求已發出但沒有回應 (Network Error)
       errorMessage.value = '無法連接到伺服器 (Network Error)，請檢查後端是否已啟動。';
     } else {
-      // 其他錯誤
       errorMessage.value = `發生錯誤: ${error.message}`;
     }
   }

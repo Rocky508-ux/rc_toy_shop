@@ -57,8 +57,15 @@ public class AuthController {
             // 3. 【發卡】呼叫 JwtUtil 製作 JWT Token
             String token = jwtUtil.generateToken(userDetails);
 
-            // 4. 【準備回傳】取得完整 User 物件 (方便前端拿 id, role, name 等顯示用)
-            User user = userService.authenticate(loginRequest.getEmail(), loginRequest.getPassword()); // 這裡直接查 DB 比對
+            // 4. 【準備回傳】取得完整 User 物件
+            User user = userService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
+
+            // ★★★ 新增：檢查帳號狀態 ★★★
+            // 支援 "停用" (Frontend display) 或 "DISABLED" (Enum/Upper case)
+            String status = user.getStatus();
+            if ("停用".equals(status) || "DISABLED".equalsIgnoreCase(status)) {
+                return new ResponseEntity<>("帳戶已被停用,請聯繫管理員", HttpStatus.FORBIDDEN); // 403 Forbidden
+            }
 
             // 5. 【包裝結果】 Token + User Info 一起傳回去
             Map<String, Object> response = new HashMap<>();
@@ -67,8 +74,11 @@ public class AuthController {
 
             return ResponseEntity.ok(response);
 
+        } catch (org.springframework.security.authentication.DisabledException e) {
+            // 6. 帳號被停用 -> 回傳 403 Forbidden
+            return new ResponseEntity<>("帳戶已被停用,請聯繫管理員", HttpStatus.FORBIDDEN);
         } catch (AuthenticationException e) {
-            // 6. 驗證失敗 (帳號不存在或密碼錯誤) -> 回傳 401 Unauthorized
+            // 7. 驗證失敗 (帳號不存在或密碼錯誤) -> 回傳 401 Unauthorized
             return new ResponseEntity<>("Invalid email or password", HttpStatus.UNAUTHORIZED);
         }
     }

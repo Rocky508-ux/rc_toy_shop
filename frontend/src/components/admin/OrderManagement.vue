@@ -18,7 +18,7 @@
         <tbody>
           <tr v-for="order in orders" :key="order.id">
             <td>{{ order.id }}</td>
-            <td>User ID: {{ order.userId }}</td>
+            <td>{{ getUserName(order.userId) }}</td>
             <td>{{ order.orderDate ? new Date(order.orderDate).toLocaleString() : '' }}</td>
             <td>NT$ {{ order.totalAmount?.toLocaleString() }}</td>
             <td>
@@ -44,7 +44,7 @@
       <div class="modal-content">
         <h2>訂單詳情 #{{ selectedOrder?.id }}</h2>
         <div class="order-details">
-          <p><strong>User ID:</strong> {{ selectedOrder?.userId }}</p>
+          <p><strong>顧客:</strong> {{ getUserName(selectedOrder?.userId) }}</p>
           <p><strong>日期:</strong> {{ selectedOrder?.orderDate ? new Date(selectedOrder.orderDate).toLocaleString() : '' }}</p>
           <p><strong>總金額:</strong> NT$ {{ selectedOrder?.totalAmount?.toLocaleString() }}</p>
           <p><strong>狀態:</strong> <span :class="['status-badge', selectedOrder?.status]">{{ selectedOrder?.status }}</span></p>
@@ -68,6 +68,7 @@ import { ref, onMounted, onActivated } from 'vue';
 import api from '../../services/api.js';
 
 const orders = ref([]);
+const usersMap = ref({}); // 儲存 userId -> name 的對照表
 const showDetailModal = ref(false);
 const selectedOrder = ref(null);
 
@@ -77,18 +78,49 @@ const emit = defineEmits(['show-notification']);
 const fetchOrders = async () => {
   try {
     const response = await api.getOrders();
-    console.log("Admin Orders Response:", response.data); // Debug log
+    console.log("Admin Orders Response:", response.data); 
     orders.value = response.data;
   } catch (error) {
     console.error("目前無法獲取訂單列表:", error);
-    // 這裡通常是讀取失敗，也許不需要 notification，或者顯示 error toast
     emit('show-notification', "無法獲取訂單列表");
   }
 };
 
-onMounted(fetchOrders);
+// 獲取所有使用者以顯示名稱
+const fetchUsers = async () => {
+  try {
+    const response = await api.getUsers();
+    // 建立 ID -> Name 的 Map
+    const map = {};
+    if (Array.isArray(response.data)) {
+        response.data.forEach(user => {
+            map[user.id] = user.name;
+        });
+    }
+    usersMap.value = map;
+  } catch (error) {
+    console.error("無法獲取使用者換取名稱:", error);
+  }
+};
+
+onMounted(() => {
+    fetchOrders();
+    fetchUsers();
+});
+
 // 因為 Admin.vue 使用了 keep-alive，所以切換回來時要用 onActivated 重新抓取資料
-onActivated(fetchOrders);
+onActivated(() => {
+    fetchOrders();
+    // 使用者列表如果不常變動，可以不用每次都抓，但為了保險起見也抓一下
+    if (Object.keys(usersMap.value).length === 0) {
+        fetchUsers();
+    }
+});
+
+// 輔助函式：根據 ID 取得名稱
+const getUserName = (userId) => {
+    return usersMap.value[userId] || `User ID: ${userId}`; // 找不到就顯示 ID
+};
 
 // 狀態現在直接儲存中文，無需映射
 const formatStatus = (status) => status;

@@ -1,5 +1,7 @@
 package com.rctoyshop.backend.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,12 +18,18 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
-
+//uisfhijahfhsf
     private final UserService userService;
 
     public UserController(UserService userService) {
         this.userService = userService;
     }
+
+    @GetMapping
+    public ResponseEntity<List<User>> getAllUsers() {
+    return ResponseEntity.ok(userService.findAllUsers());
+}
+
 
     // 獲取個人資料
     @GetMapping("/{id}")
@@ -43,3 +51,6 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 }
+
+
+// 測試一下

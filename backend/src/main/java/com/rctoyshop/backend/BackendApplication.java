@@ -1,7 +1,11 @@
 package com.rctoyshop.backend;
 
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+
+import com.rctoyshop.backend.repository.UserRepository;
 
 @SpringBootApplication
 public class BackendApplication {
@@ -10,9 +14,8 @@ public class BackendApplication {
 		SpringApplication.run(BackendApplication.class, args);
 	}
 
-	@org.springframework.context.annotation.Bean
-	public org.springframework.boot.CommandLineRunner commandLineRunner(
-			com.rctoyshop.backend.repository.UserRepository userRepository) {
+	@Bean
+	public CommandLineRunner commandLineRunner(UserRepository userRepository) {
 		return args -> {
 			System.out.println("================= DB USER DUMP START =================");
 			userRepository.findAll().forEach(u -> {

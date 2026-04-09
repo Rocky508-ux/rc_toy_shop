@@ -42,11 +42,14 @@ public class Order implements Persistable<String> { // 實作 Persistable
     @jakarta.validation.constraints.Pattern(regexp = "^(?!\\d+$).{5,}$", message = "Invalid shipping address")
     private String shippingAddress;
 
-    // 4. 關聯性 (一對多)：使用 @MappedCollection 連結到 OrderItem
-    // 這會告訴 JDBC 在載入 Order 時，同時載入 OrderItem 集合
-    // idColumn = "order_id" 表示 OrderItem 表中用來連接到 Order 的欄位名稱
-    @MappedCollection(idColumn = "order_id")
-    private Set<OrderItem> items;
+        // 4. 關聯性 (一對多)：使用 @MappedCollection 連結到 OrderItem
+        // 這會告訴 JDBC 在載入 Order 時，同時載入 OrderItem 集合
+        // idColumn = "order_id" 表示 OrderItem 表中用來連接到 Order 的欄位名稱
+        // 這裡使用 Set 而不是 List：
+        // - Set 會避免「完全相同的 OrderItem 被放兩次」（由 @Data 產生的 equals/hashCode 判斷）
+        // - 每一筆 OrderItem 在資料庫有不同的 id，因此正常情況下不會吃掉「同一商品但不同明細」
+        @MappedCollection(idColumn = "order_id")
+        private Set<OrderItem> items;
 
     // --- Persistable 實作 ---
 

@@ -32,10 +32,14 @@ public interface OrderRepository extends ListCrudRepository<Order, String> {
     // List<Order> findByOrderDateAfter(LocalDateTime orderDate);
 
     // 5. 直接更新狀態 (避開 Persistable save() 的複雜性)
+    // @Modifying：告訴 Spring Data 這個 @Query 是「修改語句」（UPDATE/DELETE），不是 SELECT
+    // @Query：實際要執行的 SQL 內容
+    // @Param：方法參數對應到 SQL 裡的 :id、:status
     @org.springframework.data.jdbc.repository.query.Modifying
     @org.springframework.data.jdbc.repository.query.Query("UPDATE orders SET status = :status WHERE id = :id")
-    int updateAttributes(@org.springframework.data.repository.query.Param("id") String id,
-            @org.springframework.data.repository.query.Param("status") String status);
+    int updateAttributes(
+            @org.springframework.data.repository.query.Param("id") String id,      // 對應 SQL 裡的 :id
+            @org.springframework.data.repository.query.Param("status") String status); // 對應 SQL 裡的 :status
 
     // ListCrudRepository 自動獲得的方法:
     // List<Order> findAll(); // 📢 用於 AdminOrder.vue: getAllOrdersForAdmin
